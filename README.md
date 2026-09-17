@@ -1,6 +1,7 @@
 # FXSense
 Exchange currency platform
  http://localhost:8000
+ 
 D:\FXSense\
 ├── app.py or server.py
 ├── index.html
