@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🦉 FXSense — Friendly Currency Companion & Smart Exchange Guide</title>
+  <meta name="description" content="Friendly, zero-jargon currency forecasting, smart exchange timing, and foreign budget simulator for travelers, families, students, and seniors.">
+
+  <!-- Google Fonts: Playfair Display (Headings), Plus Jakarta Sans (UI & Body), JetBrains Mono (Financial Numbers) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js for Clean Market Trend Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="consumer-body" id="appBody">
+
+  <!-- ========================================================================
+       TOP GLOBAL TICKER STREAM
+       ======================================================================== -->
+  <aside class="consumer-ticker-bar" aria-label="Live Market Rates Ticker">
+    <div class="ticker-track" id="globalTickerTrack">
+      <div class="ticker-pill"><span class="ticker-pair">USD/INR</span> <span class="ticker-rate mono">83.425</span> <span class="badge-up">▲ +0.38%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">EUR/USD</span> <span class="ticker-rate mono">1.0864</span> <span class="badge-down">▼ -0.22%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">GBP/USD</span> <span class="ticker-rate mono">1.2715</span> <span class="badge-up">▲ +0.14%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">AED/INR</span> <span class="ticker-rate mono">22.712</span> <span class="badge-up">▲ +1.02%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">GOLD (XAU)</span> <span class="ticker-rate mono">$2,384.40</span> <span class="badge-up">▲ +0.42%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">CRUDE OIL (WTI)</span> <span class="ticker-rate mono">$81.25</span> <span class="badge-down">▼ -1.25%</span></div>
+      <div class="ticker-sep">•</div>
+      <div class="ticker-pill"><span class="ticker-pair">S&P 500</span> <span class="ticker-rate mono">5,432.10</span> <span class="badge-up">▲ +0.31%</span></div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       INTERACTIVE CLICKTHROUGH GUIDED TOUR BAR
+       ======================================================================== -->
+  <aside class="clickthrough-tour-banner" id="tourBanner" aria-label="Interactive Clickthrough Guided Tour">
+    <div class="tour-inner-container">
+      <div class="tour-info">
+        <span class="tour-badge">✨ CLICKTHROUGH TOUR</span>
+        <span class="tour-step-counter mono" id="tourStepCounter">Ready to Explore</span>
+        <p class="tour-message" id="tourMessage">
+          Welcome to FXSense! Click <strong>"Start Tour ▶"</strong> for an instant interactive walkthrough, or click any section to explore freely.
+        </p>
+      </div>
+      <div class="tour-controls">
+        <button class="btn-tour-prev" id="tourPrevBtn" style="display: none;">◀ Back</button>
+        <button class="btn-tour-next" id="tourNextBtn">Start Tour ▶</button>
+        <button class="btn-tour-dismiss" id="tourDismissBtn" title="Close Tour Banner">✕</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       1. GLOBAL NAVIGATION HEADER & LANGUAGE DROPDOWN
+       ======================================================================== -->
+  <header class="main-header" role="banner">
+    <div class="header-container">
+      
+      <!-- Logo on Left: "🦉 FXSense" in Playfair Display Warm Gold -->
+      <a href="#converter" class="brand-link" id="brandHomeLink">
+        <div class="brand-owl-bubble">🦉</div>
+        <div class="brand-titles">
+          <h1 class="brand-logo-text">FXSense</h1>
+          <span class="brand-subtitle" data-i18n="tagline">SMART & FRIENDLY CURRENCY COMPANION</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links: Converter, Market Drivers, Profit Handler, Budget Simulator, About Us -->
+      <nav class="nav-menu" role="navigation" aria-label="Main Navigation">
+        <a href="#converter" class="nav-item active" data-i18n="nav_converter">Converter</a>
+        <a href="#market-drivers" class="nav-item" data-i18n="nav_drivers">Market Drivers</a>
+        <a href="#profit-handler" class="nav-item" data-i18n="nav_timing">Profit Handler</a>
+        <a href="#budget-simulator" class="nav-item" data-i18n="nav_budget">Budget Simulator</a>
+        <a href="#market-trends" class="nav-item" data-i18n="nav_trends">Market Trends</a>
+        <a href="#about-us" class="nav-item" data-i18n="nav_about">About Us</a>
+      </nav>
+
+      <!-- Language Dropdown & Penny Mascot Trigger -->
+      <div class="header-actions">
+        
+        <!-- Accessible Language Selector Dropdown (8 Languages) -->
+        <div class="language-dropdown-wrapper">
+          <span class="lang-icon" aria-hidden="true">🌐</span>
+          <select id="languageSelect" class="language-select" aria-label="Choose Display Language">
+            <option value="en" selected>English</option>
+            <option value="hi">हिंदी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="es">Español (Spanish)</option>
+            <option value="zh">中文 (Chinese)</option>
+            <option value="fr">Français (French)</option>
+            <option value="ar">العربية (Arabic)</option>
+            <option value="de">Deutsch (German)</option>
+          </select>
+          <i data-lucide="chevron-down" class="lang-chevron"></i>
+        </div>
+
+        <!-- Penny Mascot Trigger Button -->
+        <button class="btn-ask-penny" id="headerPennyBtn" title="Ask Penny the Owl">
+          <span>🦉</span>
+          <span class="btn-text" data-i18n="ask_penny_btn">Ask Penny</span>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       MAIN APP CONTAINER
+       ======================================================================== -->
+  <main class="main-content-layout">
+
+    <!-- ======================================================================
+         2. HERO CURRENCY CONVERTER WITH 3D CARTOON COIN-FLIP ANIMATION
+         ====================================================================== -->
+    <section class="hero-converter-section tour-target" id="converter">
+      <div class="converter-card">
+        
+        <div class="converter-header">
+          <div class="header-icon-badge">🪙</div>
+          <div>
+            <h2 class="section-title" data-i18n="converter_title">Instant Currency Converter</h2>
+            <p class="section-subtitle" data-i18n="converter_subtitle">Live exchange rates with zero hidden fees & smart expected trend</p>
+          </div>
+          <div class="live-status-pill">
+            <span class="pulse-dot"></span>
+            <span class="mono" id="converterClock">LIVE RATES</span>
+          </div>
+        </div>
+
+        <!-- 3D Cartoon Coin-Flip Stage -->
+        <div class="coin-stage-wrapper">
+          <div class="coin-3d-token" id="coin3DToken" aria-hidden="true">
+            <div class="coin-face coin-front">🪙</div>
+            <div class="coin-face coin-back">✨</div>
+          </div>
+        </div>
+
+        <!-- Converter Controls Form -->
+        <div class="converter-form-grid">
+          
+          <!-- Amount Input Box (Default: "100") -->
+          <div class="input-card">
+            <label for="convertAmountInput" class="input-label" data-i18n="label_amount">YOU SEND</label>
+            <div class="input-amount-wrapper">
+              <span class="currency-symbol-tag" id="sendCurrencySymbol">$</span>
+              <input type="number" id="convertAmountInput" class="large-amount-input mono" value="100" min="1" step="any" placeholder="100">
+            </div>
+            <div class="preset-pills-row">
+              <button class="preset-pill" data-amount="50">$50</button>
+              <button class="preset-pill active" data-amount="100">$100</button>
+              <button class="preset-pill" data-amount="500">$500</button>
+              <button class="preset-pill" data-amount="1000">$1,000</button>
+            </div>
+          </div>
+
+          <!-- "From" Currency Dropdown (Supporting 25+ Global Currencies) -->
+          <div class="input-card">
+            <label for="fromCurrencySelect" class="input-label" data-i18n="label_from">FROM CURRENCY</label>
+            <div class="select-currency-wrapper">
+              <select id="fromCurrencySelect" class="large-currency-select" aria-label="Select source currency">
+                <!-- Populated via app.js -->
+              </select>
+            </div>
+            <span class="currency-full-name" id="fromCurrencyFullName">US Dollar (United States)</span>
+          </div>
+
+          <!-- Interactive 3D Coin Swap Button (⇄) -->
+          <div class="swap-button-container">
+            <button type="button" class="btn-swap-coins" id="swapCurrenciesBtn" title="Swap Currencies & Flip Coin (Click to test 3D animation!)" aria-label="Swap Currencies">
+              <span class="swap-icon-wrap">⇄</span>
+            </button>
+          </div>
+
+          <!-- "To" Currency Dropdown (Supporting 25+ Global Currencies) -->
+          <div class="input-card">
+            <label for="toCurrencySelect" class="input-label" data-i18n="label_to">YOU RECEIVE (TARGET)</label>
+            <div class="select-currency-wrapper">
+              <select id="toCurrencySelect" class="large-currency-select" aria-label="Select target currency">
+                <!-- Populated via app.js -->
+              </select>
+            </div>
+            <span class="currency-full-name" id="toCurrencyFullName">Indian Rupee (India)</span>
+          </div>
+
+        </div>
+
+        <!-- Result Display Box with Slot-Machine Digit Rolling Animation -->
+        <div class="converter-result-box">
+          <div class="result-headline-row">
+            <span class="result-lead-label" data-i18n="estimated_total">Estimated Converted Total:</span>
+            <div class="slot-machine-container" id="slotMachineContainer">
+              <span class="converted-amount-big mono" id="convertedAmountDisplay">8,342.50</span>
+              <span class="converted-target-code" id="targetCurrencyCodeDisplay">INR</span>
+            </div>
+          </div>
+
+          <!-- Large Result Badge: "100 USD = 8,342.50 INR (+0.38% Today)" -->
+          <div class="result-pill-badge" id="converterResultPill">
+            <span class="badge-icon">⚡</span>
+            <span class="pill-text mono font-bold" id="resultPillText">100 USD = 8,342.50 INR (+0.38% Today)</span>
+          </div>
+
+          <div class="rate-guarantee-row">
+            <span class="guarantee-item">🛡️ <strong data-i18n="guarantee_text">Interbank Mid-Market Rate</strong></span>
+            <span class="guarantee-divider">•</span>
+            <span class="guarantee-item mono" id="directExchangeRateText">1 USD = 83.4250 INR</span>
+            <span class="guarantee-divider">•</span>
+            <span class="guarantee-item text-green" id="rateTrendSummary">▲ +0.38% Today</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         3. "FXSENSE PROFIT & TIMING HANDLER" (EXCHANGE ADVISORY ENGINE)
+         ====================================================================== -->
+    <section class="advisory-section tour-target" id="profit-handler">
+      <div class="advisory-card">
+        
+        <div class="advisory-card-header">
+          <div class="advisory-title-group">
+            <div class="advisory-icon-circle">🎯</div>
+            <div>
+              <div class="senior-friendly-tag" data-i18n="timing_badge">SENIOR-FRIENDLY EXCHANGE ADVISOR</div>
+              <h2 class="advisory-headline" data-i18n="timing_title">FXSense Profit & Timing Handler</h2>
+            </div>
+          </div>
+
+          <!-- Color-Coded Status Badge -->
+          <div class="timing-status-container">
+            <div class="status-badge-large wait-hold" id="timingStatusBadge">
+              <span class="status-light-dot"></span>
+              <span id="timingStatusBadgeText" data-i18n="timing_badge_wait">🟡 WAIT & HOLD: Better Rate Projected in 2 Months</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive Calculator & Breakdown Grid -->
+        <div class="advisory-calculator-grid">
+          
+          <!-- Left: User Planned Exchange Input -->
+          <div class="planned-exchange-box">
+            <h3 class="box-title" data-i18n="plan_title">Plan Your Currency Transfer</h3>
+            <p class="box-desc" data-i18n="plan_desc">Enter how much you plan to exchange to see whether you make more money today or by waiting.</p>
+            
+            <div class="planned-input-group">
+              <label for="plannedAmountInput" class="input-label" data-i18n="plan_input_label">YOUR PLANNED EXCHANGE AMOUNT</label>
+              <div class="planned-input-field">
+                <span class="currency-tag mono" id="plannedCurrencyTag">₹</span>
+                <input type="number" id="plannedAmountInput" class="mono" value="100000" step="500" min="100">
+              </div>
+            </div>
+
+            <!-- 1-Sentence Plain-English Explanation -->
+            <div class="plain-english-box">
+              <div class="box-badge">💡 <span data-i18n="why_wait_badge">Why wait? Simple explanation:</span></div>
+              <p class="plain-english-text" id="plainEnglishReason" data-i18n="plain_reason">
+                "Monsoon trade patterns and gold reserve accumulation indicate local currency strength by November."
+              </p>
+            </div>
+          </div>
+
+          <!-- Right: Instant Profit Breakdown Card -->
+          <div class="profit-breakdown-card">
+            <h3 class="breakdown-title" data-i18n="breakdown_title">Instant Profit Breakdown</h3>
+            
+            <div class="breakdown-items-list">
+              
+              <!-- Item 1: Exchanging Today -->
+              <div class="breakdown-row">
+                <div class="row-label-group">
+                  <span class="row-icon">📅</span>
+                  <div>
+                    <span class="row-title" data-i18n="today_exchange">Exchanging Today:</span>
+                    <span class="row-sub" id="todayRateSub">At current spot rate</span>
+                  </div>
+                </div>
+                <div class="row-value-group">
+                  <span class="row-amount mono" id="breakdownTodayAmount">4,400 AED</span>
+                </div>
+              </div>
+
+              <!-- Item 2: Projected in 2 Months -->
+              <div class="breakdown-row future-row">
+                <div class="row-label-group">
+                  <span class="row-icon">🚀</span>
+                  <div>
+                    <span class="row-title" data-i18n="future_exchange">Projected in 2 Months:</span>
+                    <span class="row-sub" id="futureRateSub">Based on Market Estimates</span>
+                  </div>
+                </div>
+                <div class="row-value-group">
+                  <span class="row-amount mono text-gold" id="breakdownFutureAmount">4,520 AED</span>
+                </div>
+              </div>
+
+              <!-- Item 3: Potential Gain by Waiting -->
+              <div class="breakdown-gain-banner" id="breakdownGainBanner">
+                <div class="gain-banner-content">
+                  <span class="gain-icon">🎉</span>
+                  <div class="gain-text-stack">
+                    <span class="gain-label" data-i18n="gain_label">Potential Gain by Waiting:</span>
+                    <span class="gain-number mono" id="breakdownGainAmount">+₹2,720 INR Profit!</span>
+                  </div>
+                </div>
+                <span class="gain-badge" data-i18n="gain_badge">+2.72% Extra Yield</span>
+              </div>
+
+            </div>
+
+            <div class="advisory-disclaimer">
+              <span class="disclaimer-icon">ℹ️</span>
+              <span data-i18n="disclaimer_text">Projections based on historical trends and multi-source market signals. Not guaranteed financial advice.</span>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         5. "WHAT CAN MY MONEY BUY ABROAD?" (BUDGET SIMULATOR)
+         ====================================================================== -->
+    <section class="budget-simulator-section tour-target" id="budget-simulator">
+      <div class="simulator-card">
+        
+        <div class="simulator-header">
+          <div class="header-icon-badge">🛍️</div>
+          <div>
+            <h2 class="section-title" data-i18n="budget_title">What Can My Money Buy Abroad?</h2>
+            <p class="section-subtitle" data-i18n="budget_subtitle">Explore real-world purchasing power for students, travelers & families</p>
+          </div>
+        </div>
+
+        <!-- Interactive Budget Slider -->
+        <div class="slider-control-card">
+          <div class="slider-label-row">
+            <span class="slider-title" data-i18n="slide_budget">Select your travel or transfer budget:</span>
+            <span class="slider-active-amount mono" id="activeSliderBudgetDisplay">$100 USD</span>
+          </div>
+          
+          <div class="slider-track-wrap">
+            <input type="range" id="budgetSlider" min="10" max="1000" step="10" value="100" class="custom-range-slider" aria-label="Budget Range Slider">
+            <div class="slider-scale-row mono">
+              <span>$10</span>
+              <span>$250</span>
+              <span>$500</span>
+              <span>$750</span>
+              <span>$1,000</span>
+            </div>
+          </div>
+
+          <!-- Quick Select Buttons -->
+          <div class="budget-presets-row">
+            <button class="budget-chip" data-val="50">$50</button>
+            <button class="budget-chip active" data-val="100">$100</button>
+            <button class="budget-chip" data-val="250">$250</button>
+            <button class="budget-chip" data-val="500">$500</button>
+            <button class="budget-chip" data-val="1000">$1,000</button>
+          </div>
+        </div>
+
+        <!-- Real-World Purchasing Power Grid -->
+        <div class="purchasing-power-grid" id="purchasingPowerGrid">
+          
+          <!-- Item 1: Groceries -->
+          <div class="power-card">
+            <div class="power-card-icon">🛒</div>
+            <h3 class="power-title" data-i18n="item_groceries">Household Groceries</h3>
+            <p class="power-stat" id="statGroceries">Covers ~2 weeks of healthy groceries</p>
+            <span class="power-sub" id="subGroceries">Milk, eggs, fresh vegetables & grains</span>
+          </div>
+
+          <!-- Item 2: Dining & Coffee -->
+          <div class="power-card">
+            <div class="power-card-icon">☕</div>
+            <h3 class="power-title" data-i18n="item_coffee">Dining & Gourmet Coffee</h3>
+            <p class="power-stat" id="statDining">25 cups of gourmet artisan coffee</p>
+            <span class="power-sub" id="subDining">Or 18 hearty restaurant dinners</span>
+          </div>
+
+          <!-- Item 3: Urban Transit / Taxi -->
+          <div class="power-card">
+            <div class="power-card-icon">🚕</div>
+            <h3 class="power-title" data-i18n="item_transit">City Transportation</h3>
+            <p class="power-stat" id="statTransit">12 comfortable rides across town</p>
+            <span class="power-sub" id="subTransit">Full airport transfers & metro passes</span>
+          </div>
+
+          <!-- Item 4: Cozy Stays / Hotels -->
+          <div class="power-card">
+            <div class="power-card-icon">🏨</div>
+            <h3 class="power-title" data-i18n="item_stay">Stays & Hospitality</h3>
+            <p class="power-stat" id="statStay">2 nights in a boutique heritage stay</p>
+            <span class="power-sub" id="subStay">Breakfast included with scenic views</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         4. VERIFIED MARKET DRIVERS & "READ FULL ARTICLE" PROOF LINKS
+         ====================================================================== -->
+    <section class="market-drivers-section tour-target" id="market-drivers">
+      
+      <div class="drivers-header">
+        <div class="header-icon-badge">📊</div>
+        <div>
+          <h2 class="section-title" data-i18n="drivers_title">Verified Market Drivers & Proof Articles</h2>
+          <p class="section-subtitle" data-i18n="drivers_subtitle">Transparent news links from trusted global agencies with 1-sentence plain explanations</p>
+        </div>
+      </div>
+
+      <!-- Commodity Cards for Gold Spot, Crude Oil, and S&P 500 -->
+      <div class="commodities-grid">
+        
+        <!-- Gold Spot (XAU/USD) -->
+        <div class="driver-card gold-card">
+          <div class="driver-top-row">
+            <div class="driver-asset">
+              <span class="driver-emoji">🥇</span>
+              <div>
+                <h3 class="driver-name" data-i18n="gold_title">Gold Spot (XAU/USD)</h3>
+                <span class="driver-price mono">$2,384.40 / oz</span>
+              </div>
+            </div>
+            <span class="badge-up mono font-bold">▲ +0.42%</span>
+          </div>
+          <div class="driver-summary-box">
+            <p data-i18n="gold_summary">"Central banks are buying bullion to shield reserves, which bolsters gold prices and puts steady demand on hard currencies."</p>
+          </div>
+          <div class="driver-footer">
+            <span class="driver-correlation">Market Impact: <strong>Direct Buffer</strong></span>
+            <span class="driver-tag" data-i18n="tag_reserve">Reserve Demand</span>
+          </div>
+        </div>
+
+        <!-- Crude Oil (WTI) -->
+        <div class="driver-card oil-card">
+          <div class="driver-top-row">
+            <div class="driver-asset">
+              <span class="driver-emoji">🛢️</span>
+              <div>
+                <h3 class="driver-name" data-i18n="oil_title">Crude Oil (WTI)</h3>
+                <span class="driver-price mono">$81.25 / bbl</span>
+              </div>
+            </div>
+            <span class="badge-down mono font-bold">▼ -1.25%</span>
+          </div>
+          <div class="driver-summary-box">
+            <p data-i18n="oil_summary">"Lower crude oil prices reduce national energy import costs, giving immediate breathing room to local currencies like INR."</p>
+          </div>
+          <div class="driver-footer">
+            <span class="driver-correlation">Market Impact: <strong>Cost Relief</strong></span>
+            <span class="driver-tag" data-i18n="tag_import">Import Relief</span>
+          </div>
+        </div>
+
+        <!-- S&P 500 Index -->
+        <div class="driver-card spx-card">
+          <div class="driver-top-row">
+            <div class="driver-asset">
+              <span class="driver-emoji">📈</span>
+              <div>
+                <h3 class="driver-name" data-i18n="spx_title">S&P 500 Index</h3>
+                <span class="driver-price mono">5,432.10 pts</span>
+              </div>
+            </div>
+            <span class="badge-up mono font-bold">▲ +0.31%</span>
+          </div>
+          <div class="driver-summary-box">
+            <p data-i18n="spx_summary">"Thriving global stock markets encourage investors to take confident risks, keeping capital flowing steadily across borders."</p>
+          </div>
+          <div class="driver-footer">
+            <span class="driver-correlation">Market Impact: <strong>Confidence Lift</strong></span>
+            <span class="driver-tag" data-i18n="tag_riskon">Risk-On Flow</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Real News Cards with Source Badges & Active [Read Full Article ↗] Links -->
+      <div class="verified-news-grid" id="verifiedNewsGrid">
+        
+        <!-- News Card 1: Reuters -->
+        <article class="news-proof-card">
+          <div class="news-card-meta">
+            <span class="source-badge reuters">REUTERS</span>
+            <span class="news-time mono">24m ago</span>
+          </div>
+          <h3 class="news-title">Oil Prices Slide on Supply Build, Offering Fuel Relief for Asian Importers</h3>
+          <p class="news-plain-summary" data-i18n="news_summary_1">
+            <strong>Plain-English Impact:</strong> Decreased fuel import expenses prevent currency outflows, supporting exchange rate stability.
+          </p>
+          <div class="news-card-footer">
+            <a href="https://www.reuters.com/markets/commodities/" target="_blank" rel="noopener noreferrer" class="btn-read-proof">
+              <span data-i18n="read_article">Read Full Article</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <span class="verification-pill">✓ Verified Source</span>
+          </div>
+        </article>
+
+        <!-- News Card 2: Bloomberg -->
+        <article class="news-proof-card">
+          <div class="news-card-meta">
+            <span class="source-badge bloomberg">BLOOMBERG</span>
+            <span class="news-time mono">1h ago</span>
+          </div>
+          <h3 class="news-title">Sovereign Central Banks Add Record Bullion Holdings in Global Reserve Diversification</h3>
+          <p class="news-plain-summary" data-i18n="news_summary_2">
+            <strong>Plain-English Impact:</strong> Higher physical gold reserves provide strong financial backing for national currencies.
+          </p>
+          <div class="news-card-footer">
+            <a href="https://www.bloomberg.com/markets" target="_blank" rel="noopener noreferrer" class="btn-read-proof">
+              <span data-i18n="read_article">Read Full Article</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <span class="verification-pill">✓ Verified Source</span>
+          </div>
+        </article>
+
+        <!-- News Card 3: Google News -->
+        <article class="news-proof-card">
+          <div class="news-card-meta">
+            <span class="source-badge google-news">GOOGLE NEWS</span>
+            <span class="news-time mono">2h ago</span>
+          </div>
+          <h3 class="news-title">Foreign Institutional Investors Increase Emerging Market Portfolio Allocations</h3>
+          <p class="news-plain-summary" data-i18n="news_summary_3">
+            <strong>Plain-English Impact:</strong> Foreign investors bringing capital into local markets helps strengthen exchange rates.
+          </p>
+          <div class="news-card-footer">
+            <a href="https://news.google.com/search?q=forex+currency+markets" target="_blank" rel="noopener noreferrer" class="btn-read-proof">
+              <span data-i18n="read_article">Read Full Article</span>
+              <i data-lucide="external-link"></i>
+            </a>
+            <span class="verification-pill">✓ Verified Source</span>
+          </div>
+        </article>
+
+      </div>
+
+    </section>
+
+    <!-- ======================================================================
+         MARKET TRENDS & HISTORICAL OUTLOOK (CLEAN VISUALS)
+         ====================================================================== -->
+    <section class="models-explorer-section tour-target" id="market-trends">
+      <div class="models-card">
+        
+        <div class="models-header">
+          <div class="header-icon-badge">📈</div>
+          <div>
+            <h2 class="section-title" data-i18n="trends_title">Historical Exchange Rate & Expected Trend</h2>
+            <p class="section-subtitle" data-i18n="trends_subtitle">Visualizing recent price history against forward market estimates</p>
+          </div>
+        </div>
+
+        <div class="chart-container-card">
+          <div class="chart-toolbar">
+            <div class="chart-model-checkboxes">
+              <label class="model-check-item">
+                <input type="checkbox" id="toggleActual" checked>
+                <span class="color-dot dot-actual"></span>
+                <span data-i18n="label_hist_rate">Historical Exchange Rate</span>
+              </label>
+              <label class="model-check-item">
+                <input type="checkbox" id="toggleEnsemble" checked>
+                <span class="color-dot dot-ensemble"></span>
+                <span class="font-bold" data-i18n="label_expected_trend">Expected Trend (Gold)</span>
+              </label>
+              <label class="model-check-item">
+                <input type="checkbox" id="toggleLower" checked>
+                <span class="color-dot dot-lower"></span>
+                <span data-i18n="label_conservative">Conservative Estimate</span>
+              </label>
+              <label class="model-check-item">
+                <input type="checkbox" id="toggleUpper" checked>
+                <span class="color-dot dot-upper"></span>
+                <span data-i18n="label_optimistic">Optimistic Estimate</span>
+              </label>
+            </div>
+            
+            <div class="chart-pair-pill">
+              <span class="mono" id="activeChartPairTag">USD/INR</span>
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="forecastChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Clean Consumer-Friendly Reliability Table -->
+        <div class="matrix-table-card">
+          <div class="matrix-header">
+            <h3 class="matrix-title" data-i18n="reliability_title">Market Estimates Reliability Table</h3>
+            <span class="matrix-sub">Tested against real past currency outcomes</span>
+          </div>
+
+          <div class="table-responsive">
+            <table class="friendly-table">
+              <thead>
+                <tr>
+                  <th scope="col" data-i18n="th_estimate">ESTIMATE METHOD</th>
+                  <th scope="col" data-i18n="th_description">FOCUS & DESCRIPTION</th>
+                  <th scope="col" class="text-right" data-i18n="th_match">HISTORICAL MATCH RATE</th>
+                  <th scope="col" class="text-center" data-i18n="th_horizon">FORECAST HORIZON</th>
+                  <th scope="col" data-i18n="th_status">RELIABILITY RATING</th>
+                </tr>
+              </thead>
+              <tbody id="matrixTableBody">
+                <!-- Dynamically populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         "ABOUT US" SECTION
+         ====================================================================== -->
+    <section class="about-us-section tour-target" id="about-us">
+      <div class="about-card">
+        <div class="about-header">
+          <div class="header-icon-badge">🦉</div>
+          <div>
+            <h2 class="section-title" data-i18n="about_title">About FXSense</h2>
+            <p class="section-subtitle" data-i18n="about_subtitle">Making currency exchange transparent, friendly, and honest for everyone</p>
+          </div>
+        </div>
+
+        <div class="about-grid">
+          <div class="about-text-block">
+            <h3 class="about-subheading" data-i18n="mission_title">Our Mission</h3>
+            <p data-i18n="mission_desc">
+              FXSense was created to demystify foreign exchange. Traditional banking platforms often hide fees behind complex jargon and opaque markups. We combine verifiable macroeconomic data with friendly, accessible guidance so that students, families, travelers, and senior citizens can make confident currency decisions without second-guessing.
+            </p>
+          </div>
+
+          <div class="about-features-block">
+            <div class="about-feature-item">
+              <span class="feat-icon">🛡️</span>
+              <div>
+                <h4 data-i18n="feat_1_title">Zero Hidden Fees</h4>
+                <p data-i18n="feat_1_desc">Always calculated at true interbank mid-market exchange rates.</p>
+              </div>
+            </div>
+            <div class="about-feature-item">
+              <span class="feat-icon">💡</span>
+              <div>
+                <h4 data-i18n="feat_2_title">Plain-English Explanations</h4>
+                <p data-i18n="feat_2_desc">No convoluted financial formulas—just simple, actionable advice on whether to exchange today or wait.</p>
+              </div>
+            </div>
+            <div class="about-feature-item">
+              <span class="feat-icon">🌐</span>
+              <div>
+                <h4 data-i18n="feat_3_title">Inclusive & Multi-Language</h4>
+                <p data-i18n="feat_3_desc">Available in 8 global and regional languages to ensure everyone can understand their money.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========================================================================
+       6. FLOATING MASCOT CHATBOT ASSISTANT ("PENNY THE GOLDEN OWL 🦉")
+       ======================================================================== -->
+  
+  <!-- Fixed-Position Round Button at Bottom-Right (20px, 20px) -->
+  <aside class="floating-mascot-widget tour-target" id="pennyWidgetWrapper" aria-label="Penny the Golden Owl Chat Assistant">
+    <button class="mascot-floating-circle" id="pennyMascotTrigger" aria-expanded="false" aria-controls="pennyChatWindow" title="Chat with Penny the Owl (Click to open chat!)">
+      <span class="mascot-avatar-emoji">🦉</span>
+      <span class="mascot-aura"></span>
+    </button>
+    <div class="mascot-speech-bubble" id="mascotSpeechBubble" role="status">
+      <span data-i18n="penny_greeting">Hi! Need currency advice? 🦉</span>
+    </div>
+  </aside>
+
+  <!-- Mascot Chat Window Overlay -->
+  <div class="penny-chat-card" id="pennyChatWindow" role="dialog" aria-modal="false" aria-labelledby="pennyChatTitle" style="display: none;">
+    
+    <!-- Chat Header -->
+    <div class="chat-header">
+      <div class="chat-mascot-badge">
+        <span class="chat-owl-emoji">🦉</span>
+        <div class="chat-title-group">
+          <h3 class="chat-title" id="pennyChatTitle">Penny the Golden Owl</h3>
+          <span class="chat-subtitle" data-i18n="penny_role">Your friendly zero-jargon FX guide</span>
+        </div>
+      </div>
+      <button class="chat-close-btn" id="closePennyChatBtn" aria-label="Close Chat Window">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+
+    <!-- Chat Messages Scrollable Body -->
+    <div class="chat-body" id="pennyChatMessages">
+      <div class="message-bubble penny-msg">
+        <p data-i18n="penny_intro">
+          "Hello there! I'm Penny 🦉. Whether you're planning a trip abroad, studying overseas, or sending money to family, I'm here to find you the best rates!"
+        </p>
+      </div>
+      <div class="message-bubble penny-msg">
+        <p data-i18n="penny_ask_prompt">
+          "Pick a quick question below, or tap the camera icon to upload a receipt photo for instant price conversion!"
+        </p>
+      </div>
+    </div>
+
+    <!-- 4 Instant-Question Pill Buttons as specified -->
+    <div class="chat-quick-actions" id="chatQuickActions">
+      <button class="quick-pill-btn" data-action="quick_convert">
+        <span>✈️</span>
+        <span data-i18n="pill_quick_convert">Quick Convert</span>
+      </button>
+      <button class="quick-pill-btn" data-action="timing_advice">
+        <span>📈</span>
+        <span data-i18n="pill_timing">Should I exchange today or wait?</span>
+      </button>
+      <button class="quick-pill-btn" data-action="shopping_helper">
+        <span>🛍️</span>
+        <span data-i18n="pill_shopping">Shopping Helper</span>
+      </button>
+      <button class="quick-pill-btn" data-action="upload_receipt" id="receiptPillBtn">
+        <span>🖼️</span>
+        <span data-i18n="pill_upload">Upload receipt or bill photo</span>
+      </button>
+    </div>
+
+    <!-- Chat Input Form & Image Scanner -->
+    <form class="chat-input-row" id="pennyChatForm">
+      
+      <!-- Hidden File Input for Receipt Photo Upload -->
+      <input type="file" id="receiptFileInput" accept="image/*" style="display: none;" aria-label="Upload receipt or bill image">
+      
+      <!-- Camera / Image Upload Button -->
+      <button type="button" class="btn-chat-icon" id="cameraUploadBtn" title="Upload receipt or bill photo" aria-label="Upload photo of bill">
+        <i data-lucide="camera"></i>
+      </button>
+
+      <input type="text" id="pennyUserInput" class="chat-text-input" placeholder="Ask Penny anything about exchange rates..." data-i18n-placeholder="chat_placeholder" autocomplete="off">
+
+      <button type="submit" class="btn-chat-send" aria-label="Send Message">
+        <i data-lucide="send"></i>
+      </button>
+    </form>
+
+  </div>
+
+  <!-- Simulated Receipt Scanner Laser Overlay -->
+  <div class="scanner-modal-backdrop" id="scannerBackdrop" style="display: none;">
+    <div class="scanner-dialog">
+      <div class="scanner-header">
+        <span class="scanner-owl">🦉</span>
+        <h4 data-i18n="scanning_title">Penny's Smart Bill Scanner</h4>
+      </div>
+      <div class="scanner-screen">
+        <div class="scanner-laser"></div>
+        <img id="scannedReceiptPreview" src="" alt="Receipt Preview" style="display: none;">
+        <div class="scanner-placeholder" id="scannerPlaceholder">
+          <span>🧾</span>
+          <p data-i18n="analyzing_text">Reading bill totals & converting currency...</p>
+        </div>
+      </div>
+      <div class="scanner-footer">
+        <button class="btn-scanner-cancel" id="cancelScanBtn" data-i18n="cancel_btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       FOOTER
+       ======================================================================== -->
+  <footer class="consumer-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <span class="footer-logo">🦉 FXSense</span>
+        <p class="footer-desc" data-i18n="footer_desc">Smart currency forecasting & budgeting made simple, transparent, and senior-friendly.</p>
+      </div>
+      <div class="footer-links">
+        <a href="#converter" data-i18n="nav_converter">Converter</a>
+        <a href="#market-drivers" data-i18n="nav_drivers">Market Drivers</a>
+        <a href="#profit-handler" data-i18n="nav_timing">Profit Handler</a>
+        <a href="#budget-simulator" data-i18n="nav_budget">Budget Simulator</a>
+        <a href="#market-trends" data-i18n="nav_trends">Market Trends</a>
+        <a href="#about-us" data-i18n="nav_about">About Us</a>
+      </div>
+      <div class="footer-copy mono">
+        © 2026 FXSense. Crafted with care for global citizens.
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+  <script>
+    if (window.lucide) {
+      lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
