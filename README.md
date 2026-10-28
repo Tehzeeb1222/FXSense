@@ -8,3 +8,4 @@ D:\FXSense\
 ├── fxsense_financial_dashboard.html
 ├── style.css
 └── requirements.txt
+https://tehzeeb1222.github.io/FXSense/
